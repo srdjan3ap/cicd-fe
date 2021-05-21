@@ -1,7 +1,7 @@
 pipeline {
   agent any
   environment {
-    GIT_CREDENTIALS_ID = ""
+    gitCredentialsId = 'github-jenkins-ssh'
     artifactTergetDir = 'oc-build'
     buildArtifactSmeApp = 'dist/apps/sme-app'
     buildConfigNameSmeApp = 'sme-app-image'
@@ -12,6 +12,17 @@ pipeline {
     stage('first-step'){
       steps{
         sh 'echo "Helloooooo!!!"'
+      }
+    }
+    stage('Set variables') {
+      steps {
+        script {
+          gitBranch = GIT_BRANCH
+          sh 'git config --global user.email "srdjan@3ap.ch"'
+          sh 'git config --global user.name "Srdjan Obradovic"'
+          // fix "detached HEAD" state
+          sh "git checkout ${gitBranch}"
+        }
       }
     }
   }
