@@ -1,0 +1,11 @@
+pipeline {
+  agent any
+  environment {
+    GIT_CREDENTIALS_ID = ""
+    artifactTergetDir = 'oc-build'
+    buildArtifactSmeApp = 'dist/apps/sme-app'
+    buildConfigNameSmeApp = 'sme-app-image'
+//    OpenShiftProjectDev = 'axa-advice-sme-dev-axa-ch'
+//    OpenShiftClusterName = 'axa-advice-sme-dev-axa-ch-private-blue'
+  }
+}
