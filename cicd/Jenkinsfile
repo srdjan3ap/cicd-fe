@@ -18,10 +18,41 @@ pipeline {
       steps {
         script {
           gitBranch = GIT_BRANCH
-          sh 'git config --global user.email "srdjan@3ap.ch"'
-          sh 'git config --global user.name "Srdjan Obradovic"'
           // fix "detached HEAD" state
           sh "git checkout ${gitBranch}"
+        }
+      }
+    }
+//    stage('Install dependencies') {
+//      steps {
+//        echo "install dependencies"
+//        sh "npm i -g yarn@1.22.4"
+//        sh "npm i -g wait-on@5.0.1"
+//        sh "npm i -g @angular/cli@9.1.9"
+//        sh "yarn config set strict-ssl false"
+//        // Yarn can't figure out the registry, so we have to set it manually
+//        sh(script: "sed -i -e \"s#https://registry.yarnpkg.com/#`npm config get registry`/#g\" yarn.lock")
+//        sh(script: "sed -i -e \"s#https://artifactory.europe.axa-cloud.com/artifactory/api/npm/axa-ch_eliah-npm-release#https://default.artifactory.pink.eu-central-1.aws.openpaas.axa-cloud.com/artifactory/api/npm/axa-ch_eliah-npm-release#g\" yarn.lock")
+//        npmInstallCached()
+//      }
+//    }
+    stage('Create git tag') {
+//      when {
+//        expression {
+//          return shouldCreateGitTag()
+//        }
+//      }
+      steps {
+        script {
+          echo "create git tag"
+          sh 'git config --global user.email "srdjan@3ap.ch"'
+          sh 'git config --global user.name "Srdjan Obradovic"'
+          sh 'yarn config set version-tag-prefix "Version_"'
+          sh 'yarn config set version-git-message ":rocket: [automated release] :rocket: %s"'
+          sshagent([GIT_CREDENTIALS_ID]) {
+            sh 'yarn version --patch'
+            sh "git push --follow-tags --set-upstream origin ${gitBranch}"
+          }
         }
       }
     }
