@@ -36,6 +36,14 @@ pipeline {
 //        npmInstallCached()
 //      }
 //    }
+    stage('Prepare') {
+      steps {
+        script {
+          sh "npm install -g yarn"
+          sh "yarn install"
+        }
+      }
+    }
     stage('Create git tag') {
 //      when {
 //        expression {
